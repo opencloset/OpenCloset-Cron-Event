@@ -1,0 +1,8 @@
+# Change Log
+The format is based on [Keep a Changelog](http://keepachangelog.com/)
+
+## [Unreleased]
+
+## [v0.0.1] - Mon, 05 Jun 2017 15:43:07 +0900
+### Added
+- 취업날개 예약중 상태를 대여완료로 변경하는 cronjob 추가
