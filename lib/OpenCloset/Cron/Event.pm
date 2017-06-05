@@ -24,11 +24,11 @@ OpenCloset::Cron::Event - 이벤트와 관련된 예약작업
 
 =head1 METHODS
 
-=head2 update_employment_wing_status( $account, $date, $status_to )
+=head2 update_employment_wing_status( $schema, $account, $date, $status )
 
     use OpenCloset::Events::EmploymentWing qw/$EW_STATUS_COMPLETE/;
     ...
-    update_employment_wing_status({ username => 'xxxx', password => 'xxxx' }, $date, $EW_STATUS_COMPLETE);
+    update_employment_wing_status($schema, $account, $date, $EW_STATUS_COMPLETE);
 
 C<$ymd> 일 취업날개를 통해 예약한 방문자의 예약상태를 변경
 
@@ -67,7 +67,7 @@ sub update_employment_wing_status {
         }
     )->search_literal( 'DATE(`booking`.`date`) = ?', $date->ymd );
 
-    my %count;
+    my %count = (success => 0, fail => 0);
     while ( my $row = $rs->next ) {
         my $desc = $row->get_column('desc');
         my ( $event, $rent_num, $mbersn ) = split /\|/, $desc;
