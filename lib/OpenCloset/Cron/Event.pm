@@ -24,7 +24,7 @@ OpenCloset::Cron::Event - 이벤트와 관련된 예약작업
 
 =head1 METHODS
 
-=head2 update_employment_wing_status( $schema, $account, $date, $status )
+=head2 update_employment_wing_status( $schema, $date, $status )
 
     use OpenCloset::Events::EmploymentWing qw/$EW_STATUS_COMPLETE/;
     ...
@@ -44,17 +44,10 @@ C<$rent_num> 없이 예약된 경우도 있음
 =cut
 
 sub update_employment_wing_status {
-    my ( $schema, $account, $date, $status ) = @_;
+    my ( $schema, $date, $status ) = @_;
 
-    my $client = OpenCloset::Events::EmploymentWing->new(
-        username => $account->{username},
-        password => $account->{password},
-    );
-
-    die "Failed to sign in 취업날개 관리서비스" unless $client;
-    return unless $client;
-
-    my $rs = $schema->resultset('Order')->search(
+    my $client = OpenCloset::Events::EmploymentWing->new;
+    my $rs     = $schema->resultset('Order')->search(
         {
             'me.status_id'  => { 'not in' => [ $NOT_VISITED, $RESERVATED ] },
             'coupon.status' => 'used',
@@ -67,7 +60,7 @@ sub update_employment_wing_status {
         }
     )->search_literal( 'DATE(`booking`.`date`) = ?', $date->ymd );
 
-    my %count = (success => 0, fail => 0);
+    my %count = ( success => 0, fail => 0 );
     while ( my $row = $rs->next ) {
         my $desc = $row->get_column('desc');
         my ( $event, $rent_num, $mbersn ) = split /\|/, $desc;

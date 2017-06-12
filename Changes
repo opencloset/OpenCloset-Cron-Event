@@ -3,6 +3,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
 
+### Changed
+- freedress.net account is not required
+
 ## [v0.0.2] - Mon, 05 Jun 2017 15:51:36 +0900
 ### Changed
 - 스스로 의존성을 갖는 문제 해결
