@@ -21,12 +21,10 @@ my $CONF     = OpenCloset::Config::load($config_file);
 my $APP_CONF = $CONF->{$Script};
 my $DB_CONF  = $CONF->{database};
 my $TIMEZONE = $CONF->{timezone};
-my $FREEDRESS = $CONF->{freedress};
 
 die "$config_file: $Script is needed\n"  unless $APP_CONF;
 die "$config_file: database is needed\n" unless $DB_CONF;
 die "$config_file: timezone is needed\n" unless $TIMEZONE;
-die "$config_file: freedress is needed\n" unless $FREEDRESS;
 
 my $DB = OpenCloset::Schema->connect(
     { dsn => $DB_CONF->{dsn}, user => $DB_CONF->{user}, password => $DB_CONF->{pass}, %{ $DB_CONF->{opts} }, } );
@@ -44,8 +42,8 @@ my $worker1 = do {
 
             my $today = DateTime->today( time_zone => $TIMEZONE );
             my $date = $today->clone->subtract( days => 1 );
-            my $count = update_employment_wing_status($DB, $FREEDRESS, $date, $EW_STATUS_COMPLETE);
-            AE::log(info => sprintf("%s success: %d, fail: %d", $date->ymd, $count->{success}, $count->{fail}));
+            my $count = update_employment_wing_status( $DB, $date, $EW_STATUS_COMPLETE );
+            AE::log( info => sprintf( "%s success: %d, fail: %d", $date->ymd, $count->{success}, $count->{fail} ) );
         }
     );
 };
