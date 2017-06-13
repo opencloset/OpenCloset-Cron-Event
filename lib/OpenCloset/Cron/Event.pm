@@ -8,7 +8,11 @@ use strict;
 use warnings;
 
 use OpenCloset::Events::EmploymentWing;
-use OpenCloset::Constants::Status qw/$NOT_VISITED $RESERVATED/;
+use OpenCloset::Constants::Status qw/
+    $NOT_VISITED
+    $RESERVATED
+    $RENTAL
+    $RETURNED/;
 
 =encoding utf8
 
@@ -49,6 +53,7 @@ sub update_employment_wing_status {
     my $client = OpenCloset::Events::EmploymentWing->new;
     my $rs     = $schema->resultset('Order')->search(
         {
+            'me.online'     => 0,
             'me.status_id'  => { 'not in' => [ $NOT_VISITED, $RESERVATED ] },
             'coupon.status' => 'used',
             'coupon.desc' => { -like => 'seoul-2017%' },
@@ -61,6 +66,45 @@ sub update_employment_wing_status {
     )->search_literal( 'DATE(`booking`.`date`) = ?', $date->ymd );
 
     my %count = ( success => 0, fail => 0 );
+    while ( my $row = $rs->next ) {
+        my $desc = $row->get_column('desc');
+        my ( $event, $rent_num, $mbersn ) = split /\|/, $desc;
+        next if $event eq 'seoul-2017';
+
+        my $success = $client->update_status( $rent_num, $status );
+
+        unless ($success) {
+            printf STDERR "[%s] Failed to update status to %d: %s", $date->ymd, $EW_STATUS_COMPLETE, $desc;
+
+            $count{fail}++;
+            sleep(1);
+            next;
+        }
+
+        $count{success}++;
+        sleep(1);
+    }
+
+    $rs = $schema->resultset('Order')->search(
+        {
+            'me.online'      => 1,
+            'me.rental_date' => {
+                -between => [
+                    $date->datetime,
+                    $date->clone->add( days => 1 )->subtract( seconds => 1 )->datetime
+                ]
+            },
+            'me.status_id' => { -in => [ $RENTAL, $RETURNED ] }, # 대여중 혹은 반납
+            'coupon.status' => 'used',
+            'coupon.desc'   => { -like => 'seoul-2017%' },
+        },
+        {
+            select => ['coupon.desc'],
+            as     => ['desc'],
+            join   => 'coupon'
+        }
+    );
+
     while ( my $row = $rs->next ) {
         my $desc = $row->get_column('desc');
         my ( $event, $rent_num, $mbersn ) = split /\|/, $desc;
