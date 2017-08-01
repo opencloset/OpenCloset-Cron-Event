@@ -99,8 +99,8 @@ sub update_employment_wing_status {
             'coupon.desc'   => { -like => 'seoul-2017%' },
         },
         {
-            select => ['coupon.desc'],
-            as     => ['desc'],
+            select => [ 'coupon.desc', 'rental_date' ],
+            as     => [ 'desc',        'rental_date' ],
             join   => 'coupon'
         }
     );
@@ -112,7 +112,11 @@ sub update_employment_wing_status {
 
         my $success = $client->update_status( $rent_num, $status );
 
-        unless ($success) {
+        if ($success) {
+            my $rental_date = $row->rental_date;
+            $client->update_booking_datetime( $rent_num, $rental_date, 1 );
+        }
+        else {
             printf STDERR "[%s] Failed to update status to %d: %s", $date->ymd, $EW_STATUS_COMPLETE, $desc;
 
             $count{fail}++;

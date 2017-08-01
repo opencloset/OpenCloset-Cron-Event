@@ -6,5 +6,5 @@ requires 'OpenCloset::Common';
 requires 'OpenCloset::Config';
 requires 'OpenCloset::Cron';
 requires 'OpenCloset::Cron::Worker';
-requires 'OpenCloset::Events::EmploymentWing', 'v0.0.2';
+requires 'OpenCloset::Events::EmploymentWing', 'v0.0.4';
 requires 'OpenCloset::Schema';
