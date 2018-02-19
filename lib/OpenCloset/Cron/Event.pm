@@ -56,7 +56,7 @@ sub update_employment_wing_status {
             'me.online'     => 0,
             'me.status_id'  => { 'not in' => [ $NOT_VISITED, $RESERVATED ] },
             'coupon.status' => 'used',
-            'coupon.desc' => { -like => 'seoul-2017%' },
+            'coupon.desc' => { -like => 'seoul-2018%' },
         },
         {
             select => ['coupon.desc'],
@@ -69,7 +69,7 @@ sub update_employment_wing_status {
     while ( my $row = $rs->next ) {
         my $desc = $row->get_column('desc');
         my ( $event, $rent_num, $mbersn ) = split /\|/, $desc;
-        next if $event eq 'seoul-2017';
+        next if $event eq 'seoul-2018';
 
         my $success = $client->update_status( $rent_num, $status );
 
@@ -96,7 +96,7 @@ sub update_employment_wing_status {
             },
             'me.status_id' => { -in => [ $RENTAL, $RETURNED ] }, # 대여중 혹은 반납
             'coupon.status' => 'used',
-            'coupon.desc'   => { -like => 'seoul-2017%' },
+            'coupon.desc'   => { -like => 'seoul-2018%' },
         },
         {
             select => [ 'coupon.desc', 'rental_date' ],
@@ -108,7 +108,7 @@ sub update_employment_wing_status {
     while ( my $row = $rs->next ) {
         my $desc = $row->get_column('desc');
         my ( $event, $rent_num, $mbersn ) = split /\|/, $desc;
-        next if $event eq 'seoul-2017';
+        next if $event eq 'seoul-2018';
 
         my $success = $client->update_status( $rent_num, $status );
 
@@ -137,6 +137,6 @@ sub update_employment_wing_status {
 
 The MIT License (MIT)
 
-Copyright (c) 2017 열린옷장
+Copyright (c) 2018 열린옷장
 
 =cut
