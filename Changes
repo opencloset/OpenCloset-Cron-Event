@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
 
+## [v0.1.1] - Mon, 19 Feb 2018 15:55:01 +0900
+
+### Changed
+- 취업날개 쿠폰이 `seoul-2017-2` 에서 `seoul-2018-1` 로 변경됨
+
 ## [v0.1.0] - Thu, 02 Nov 2017 15:00:08 +0900
 
 ### Added
