@@ -114,7 +114,7 @@ sub update_employment_wing_status {
 
         if ($success) {
             my $rental_date = $row->rental_date;
-            $client->update_booking_datetime( $rent_num, $rental_date, 1 );
+            $client->update_booking_datetime( $rent_num, $rental_date, 1, 1 );
         }
         else {
             printf STDERR "[%s] Failed to update status to %d: %s", $date->ymd, $EW_STATUS_COMPLETE, $desc;
