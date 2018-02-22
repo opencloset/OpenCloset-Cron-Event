@@ -3,6 +3,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
 
+## [v0.1.2] - Thu, 22 Feb 2018 13:09:36 +0900
+
+### Fixed
+- 택배발송일을 변경요청하는 parameter 를 수정함
+
 ## [v0.1.1] - Mon, 19 Feb 2018 15:55:01 +0900
 
 ### Changed
