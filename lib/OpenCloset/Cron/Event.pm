@@ -4,6 +4,7 @@ require Exporter;
 @ISA       = qw/Exporter/;
 @EXPORT_OK = qw/update_employment_wing_status/;
 
+use utf8;
 use strict;
 use warnings;
 
@@ -50,18 +51,24 @@ C<$rent_num> 없이 예약된 경우도 있음
 sub update_employment_wing_status {
     my ( $schema, $date, $status ) = @_;
 
+    my $year = (localtime)[5] + 1900;
+    my $name = sprintf("seoul-%d-1", $year);
     my $client = OpenCloset::Events::EmploymentWing->new;
+    my $event  = $schema->search({ name => $name })->next;
     my $rs     = $schema->resultset('Order')->search(
         {
             'me.online'     => 0,
             'me.status_id'  => { 'not in' => [ $NOT_VISITED, $RESERVATED ] },
             'coupon.status' => 'used',
-            'coupon.desc' => { -like => 'seoul-2018%' },
+            'event.id'      => $event->id,
         },
         {
             select => ['coupon.desc'],
             as     => ['desc'],
-            join   => [ 'booking', 'coupon' ]
+            join   => [
+                'booking',
+                { coupon => 'event' }
+            ]
         }
     )->search_literal( 'DATE(`booking`.`date`) = ?', $date->ymd );
 
@@ -69,8 +76,6 @@ sub update_employment_wing_status {
     while ( my $row = $rs->next ) {
         my $desc = $row->get_column('desc');
         my ( $event, $rent_num, $mbersn ) = split /\|/, $desc;
-        next if $event eq 'seoul-2018';
-
         my $success = $client->update_status( $rent_num, $status );
 
         unless ($success) {
@@ -96,20 +101,18 @@ sub update_employment_wing_status {
             },
             'me.status_id' => { -in => [ $RENTAL, $RETURNED ] }, # 대여중 혹은 반납
             'coupon.status' => 'used',
-            'coupon.desc'   => { -like => 'seoul-2018%' },
+            'event.id'      => $event->id,
         },
         {
             select => [ 'coupon.desc', 'rental_date' ],
             as     => [ 'desc',        'rental_date' ],
-            join   => 'coupon'
+            join   => { coupon => 'event' }
         }
     );
 
     while ( my $row = $rs->next ) {
         my $desc = $row->get_column('desc');
         my ( $event, $rent_num, $mbersn ) = split /\|/, $desc;
-        next if $event eq 'seoul-2018';
-
         my $success = $client->update_status( $rent_num, $status );
 
         if ($success) {
