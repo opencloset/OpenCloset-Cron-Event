@@ -3,6 +3,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
 
+## [v0.1.4] - Tue, 15 Jan 2019 14:03:29 +0900
 ### Changed
 - `event.id` 를 참조해서 업데이트할 쿠폰번호를 질의 (#2)
 
