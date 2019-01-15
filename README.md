@@ -1,6 +1,6 @@
 # OpenCloset-Cron-Event #
 
-[![Build Status](https://travis-ci.org/opencloset/OpenCloset-Cron-Event.svg?branch=v0.1.3)](https://travis-ci.org/opencloset/OpenCloset-Cron-Event)
+[![Build Status](https://travis-ci.org/opencloset/OpenCloset-Cron-Event.svg?branch=v0.1.4)](https://travis-ci.org/opencloset/OpenCloset-Cron-Event)
 
 이벤트와 관련된 예약작업
 
