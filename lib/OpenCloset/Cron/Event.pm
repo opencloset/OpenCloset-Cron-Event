@@ -54,7 +54,7 @@ sub update_employment_wing_status {
     my $year = (localtime)[5] + 1900;
     my $name = sprintf("seoul-%d-1", $year);
     my $client = OpenCloset::Events::EmploymentWing->new;
-    my $event  = $schema->search({ name => $name })->next;
+    my $event  = $schema->resultset('Event')->search({ name => $name })->next;
     my $rs     = $schema->resultset('Order')->search(
         {
             'me.online'     => 0,
