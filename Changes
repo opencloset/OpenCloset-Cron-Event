@@ -2,6 +2,8 @@
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 
 ## [Unreleased]
+
+## [v0.1.5] - Thu, 17 Jan 2019 22:46:04 +0900
 ### Fixed
 - 오타로 인한 runtime error 수정
 
